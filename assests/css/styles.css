@@ -4,18 +4,10 @@
    box-sizing:border-box;
 }
 
-.wrapper {
-    width: 60%;
-    margin: 0 auto;
-    padding: 0 15px;
-}
 
-@media screen and (max-width:576px){
-    .wrapper {
-        width: 100%;
-    }
+.border {
+    border: 1px solid red;
 }
-
 .forms-wrapper {
    position:relative;
    padding-top:50px;
@@ -94,8 +86,8 @@
 
 @media screen and (max-width:576px){
     #new-question-text {
-    width: 100%;
-}
+        min-width: 100%;
+    }
 }
 
 #new-question-text:focus {
@@ -105,6 +97,16 @@
 
 
 /* option div */ 
+
+.admin-options-container {
+    margin-left: 15px;
+}
+
+/* @media screen and (max-width:576px){
+    .admin-options-container {
+        margin-left: 15px;
+    }
+} */
 
 div.admin-option-wrapper {
     position: relative;
@@ -146,8 +148,8 @@ div.forms-wrapper input[type="text"]:focus {
 #question-insert-btn {
     font-family: 'Cabin', sans-serif;
     /* margin-left: 80px; */
-    padding: 10px 10px;
-    width: 120px;
+    padding: 10px;
+    width: 110px;
     color: #eee;
     font-size: 16px;
     letter-spacing: 1.5px;
@@ -164,6 +166,28 @@ div.forms-wrapper input[type="text"]:focus {
     background: #555;
 }
 
+#questions-clear-btn {
+    letter-spacing: 1.5px;
+    font-family: 'Cabin', sans-serif;
+    color: #eee;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 25px;
+    width: 110px;
+    background: #222;
+    /* position: absolute;
+    right: 15px;
+    bottom: 0px; */
+    border: 1px solid #ccc;
+    outline: none;
+    transition: all .3s;
+}
+
+#questions-clear-btn:hover {
+    border: 1px solid #fff;
+    background: #555;
+}
+
 
 div.inserted-questions-wrapper {
     padding: 10px 0;
@@ -174,6 +198,18 @@ div.inserted-questions-wrapper {
     border-radius: 3px;
     overflow: auto;
 }
+
+@media screen and (max-width:576px){
+    div.inserted-questions-wrapper {
+        padding: 10px 0;
+        width: 100%;
+        min-height: 200px;
+        background: rgba(0, 0, 0, .65);
+        border-radius: 3px;
+        overflow: auto;
+    }
+}
+
 
 div.inserted-questions-wrapper::-webkit-scrollbar {
     background: rgba(0,0,0,.2);
@@ -226,27 +262,7 @@ div.inserted-questions-wrapper p button:hover {
     border: 1px solid #fff;
 }
 
-#questions-clear-btn {
-    letter-spacing: 1.5px;
-    font-family: 'Cabin', sans-serif;
-    color: #eee;
-    font-size: 16px;
-    padding: 10px;
-    border-radius: 25px;
-    width: 120px;
-    background: #222;
-    position: absolute;
-    right: 15px;
-    bottom: 0px;
-    border: 1px solid #ccc;
-    outline: none;
-    transition: all .3s;
-}
 
-#questions-clear-btn:hover {
-    border: 1px solid #fff;
-    background: #555;
-}
 
 /* section.quiz-container */
 

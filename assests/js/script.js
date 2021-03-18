@@ -13,6 +13,10 @@ let AccessLocalStorage = {
     }
 };
 
+var quizProgress = {
+   questionIndex:0
+}
+
 
 if(AccessLocalStorage.GetLocalStorage() === null){
         AccessLocalStorage.SetLocalStorage([]);
@@ -28,7 +32,7 @@ function QuestionTest(id, question, options, correAns){
 
 
 return {
-
+    getQuizProgress: quizProgress,
     addLocal: function(questionsText, opt){
 
      let optArr, newQuestion, correctAnswer, questionId, getStored, isChecked;
@@ -102,7 +106,10 @@ let DomElements = {
     insertedquestionswrapper: document.querySelector(".inserted-questions-wrapper"),
     questionUpdateBtn: document.querySelector("#question-update-btn"),
     questionDeleteBtn: document.querySelector("#question-delete-btn"),
-    questionsClearBtn: document.querySelector("#questions-clear-btn")
+    questionsClearBtn: document.querySelector("#questions-clear-btn"),
+    //*************** Quiz Section Elements ************** */
+    askedQuestText: document.getElementById("asked-question-text"),
+    quizOptionWrapper: document.querySelector(".quiz-options-wrapper")
 };
 return {
 
@@ -250,6 +257,25 @@ return {
               }
           }
        }
+   },
+
+   displayQuestion: function(storage, progress){
+      var newOptionHtml, characterArray;
+      characterArray = ["A", "B", "C", "D", "E", "F"];
+      if(storage.GetLocalStorage().length > 0){
+         DomElements.askedQuestText.textContent = storage.GetLocalStorage()[progress.questionIndex].question;
+         console.log(storage.GetLocalStorage());
+
+         DomElements.quizOptionWrapper.innerHTML = "";
+
+         for(var i = 0; i < storage.GetLocalStorage()[progress.questionIndex].optAnswer.length; i++){
+            newOptionHtml = '<div class="choice-' + i + '"><span class="choice-'+ i +'">'+ characterArray[i] +'</span><p  class="choice-'+ i +'">' + storage.GetLocalStorage()[progress.questionIndex].optAnswer[i] +'</p></div>';
+
+            DomElements.quizOptionWrapper.insertAdjacentHTML('beforeend', newOptionHtml);
+
+         }
+      }
+      
    }
    
 };
@@ -272,6 +298,7 @@ var controller = (function(AccessDom, AccessLoc){
    AccessDom.DomaccessGlobal.questionsClearBtn.addEventListener("click", function(){
          AccessDom.clearQuestionList(AccessLoc.accessLoc)
    });
+   AccessDom.displayQuestion(AccessLoc.accessLoc, AccessLoc.getQuizProgress);
      
 })(Dom, Accesslocal);
 
