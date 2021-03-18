@@ -4,6 +4,18 @@
    box-sizing:border-box;
 }
 
+.wrapper {
+    width: 60%;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+@media screen and (max-width:576px){
+    .wrapper {
+        width: 100%;
+    }
+}
+
 .forms-wrapper {
    position:relative;
    padding-top:50px;
@@ -59,6 +71,9 @@
     background: #555;
 }
 
+
+
+/* textarea */
 #new-question-text {
     font-family: 'Josefin Sans', sans-serif;
     font-size: 18px;
@@ -66,7 +81,7 @@
     max-width: 500px;
     min-width: 250px;
     width: 70%;
-    height: 70px;
+   
     border-radius: 2px;
     border: .5px solid #eee;
     display: block;
@@ -77,15 +92,33 @@
     transition: all .5s;
 }
 
+@media screen and (max-width:576px){
+    #new-question-text {
+    width: 100%;
+}
+}
+
 #new-question-text:focus {
     border: .5px solid #3b8beb;
     background: #555;
 }
+
+
+/* option div */ 
+
 div.admin-option-wrapper {
     position: relative;
     margin:0 auto;
     width: 70%;
 }
+
+@media screen and (max-width:576px){
+    div.admin-option-wrapper {
+        position: relative;
+        width: 100%;
+    }
+}
+
 div.forms-wrapper input[type="text"] {
     width: 80%;
     font-family: 'Josefin Sans', sans-serif;
@@ -107,9 +140,12 @@ div.forms-wrapper input[type="text"]:focus {
     background: #555;
 }
 
+
+/* question-insert-btn */
+
 #question-insert-btn {
     font-family: 'Cabin', sans-serif;
-    margin-left: 80px;
+    /* margin-left: 80px; */
     padding: 10px 10px;
     width: 120px;
     color: #eee;
@@ -212,7 +248,7 @@ div.inserted-questions-wrapper p button:hover {
     background: #555;
 }
 
-
+/* section.quiz-container */
 
 section.quiz-container {
     height: 90vh;

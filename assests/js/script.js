@@ -1,5 +1,6 @@
 
 var Accesslocal = (function(){
+
 let AccessLocalStorage = {
     SetLocalStorage: function(para){
        localStorage.setItem("QuestionCollections", JSON.stringify(para));
@@ -11,25 +12,35 @@ let AccessLocalStorage = {
         localStorage.removeItem("QuestionCollections");
     }
 };
+
+
 if(AccessLocalStorage.GetLocalStorage() === null){
         AccessLocalStorage.SetLocalStorage([]);
- }
+}
+
+
 function QuestionTest(id, question, options, correAns){
    this.id = id;
    this.question = question;
    this.optAnswer = options;
    this.correctAnswer = correAns;
 }
+
+
 return {
+
     addLocal: function(questionsText, opt){
+
      let optArr, newQuestion, correctAnswer, questionId, getStored, isChecked;
      optArr = [];
      isChecked = false;
+
      if(AccessLocalStorage.GetLocalStorage().length > 0){
        questionId = AccessLocalStorage.GetLocalStorage()[AccessLocalStorage.GetLocalStorage().length - 1].id + 1;
      } else{
        questionId = 0;
      }
+
         for(let i=0;i<opt.length;i++){
             if(opt[i].value !== ""){
             optArr.push(opt[i].value);
@@ -39,22 +50,33 @@ return {
 	            }
             }
          }
+
+
         if(questionsText.value !== ""){
+
            if(optArr.length > 1){
+
               if(isChecked){
+
                  newQuestion = new QuestionTest(questionId, questionsText.value, optArr,  correctAnswer);
                  getStored = AccessLocalStorage.GetLocalStorage();
                  getStored.push(newQuestion);
                  AccessLocalStorage.SetLocalStorage(getStored);
                  questionsText.value = "";
+
                  for(let x = 0;x<opt.length;x++){
-                 opt[x].value = "";
-                 opt[x].previousElementSibling.checked = false;
+
+                  opt[x].value = "";
+                  opt[x].previousElementSibling.checked = false;
+
                  }
                  return true;
+
               }else{
+
                  alert("you missed to check the correct answer or you checked answer without value");
                  return false;
+
               }
            }else{
               alert("You must insert at least two options");
@@ -68,7 +90,10 @@ return {
     accessLoc:AccessLocalStorage
 };
 })();
+
+
 var Dom = (function(){
+
 let DomElements = {
     Question: document.getElementById("new-question-text"),
     option: document.querySelectorAll(".admin-option"),
@@ -80,8 +105,10 @@ let DomElements = {
     questionsClearBtn: document.querySelector("#questions-clear-btn")
 };
 return {
+
    DomaccessGlobal: DomElements,
    addInputDynamically: function(){
+
      function addInputs(){
        var z, inputHtml;
        z = document.querySelectorAll(".admin-option").length;
@@ -91,8 +118,11 @@ return {
        DomElements.adminoptionsContainer.lastElementChild.lastElementChild.addEventListener("focus", addInputs, false);
      }
      DomElements.adminoptionsContainer.lastElementChild.lastElementChild.addEventListener("focus", addInputs, false);
+
    },
+
    createQuestionList:function(getquestion){
+
        var questionsList, numbering;
        numbering = [];
        DomElements.insertedquestionswrapper.innerHTML = "";
@@ -101,16 +131,22 @@ return {
            questionsList = "<p><span>" + numbering[i] + ". " + getquestion.GetLocalStorage()[i].question + ' </span><button id="question-' + getquestion.GetLocalStorage()[i].id + '">Edit</button></p>';
            DomElements.insertedquestionswrapper.insertAdjacentHTML("beforeend", questionsList);
        }
+
    },
+
    editQuestsList:function(event, storageList, inputAdd, updateList){
+
        var getId, foundItem, placeInArr, optHtml;
        DomElements.questionUpdateBtn.style.visibility = "visible";
        DomElements.questionDeleteBtn.style.visibility = "visible";
        DomElements.insertBtn.style.visibility = "hidden";
        DomElements.questionsClearBtn.style.pointerEvents = "none";
+
        if("question-".indexOf(event.target.id)){
+
           getId = parseInt(event.target.id.split("-")[1]);
           questionList = storageList.GetLocalStorage();
+
           for(let i=0;i<questionList.length;i++){
               if(getId === questionList[i].id){
                  foundItem = questionList[i];
@@ -118,9 +154,11 @@ return {
               }
               
           }
+
           optHtml = "";
           DomElements.Question.value = foundItem.question;
           DomElements.adminoptionsContainer.innerHTML = "";
+
           for(let x = 0;x<foundItem.optAnswer.length;x++){
              optHtml += '<div class="admin-option-wrapper"><input type="radio" class="admin-option-' + x + ' name="answer" value="0"><input type="text" class="admin-option admin-option-' + x + '" value="' + foundItem.optAnswer[x] + '"></div>';
              DomElements.adminoptionsContainer.innerHTML = optHtml;
@@ -166,13 +204,15 @@ return {
              
              
              if(foundItem.question !== ""){
+
                if(foundItem.optAnswer.length > 1){
+
                   if(foundItem.correctAnswer !== ""){
+
                      questionList.splice(placeInArr, 1, foundItem);
                      storageList.SetLocalStorage(questionList);
                      
                      backDefaultview();
-                     
                      
                   }else{
                      alert("you missed to check the correct answer or you checked answer without value");
