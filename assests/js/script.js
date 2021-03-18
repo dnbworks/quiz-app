@@ -1,4 +1,4 @@
-
+// modal pattern
 var Accesslocal = (function(){
 
 let AccessLocalStorage = {
@@ -109,7 +109,9 @@ let DomElements = {
     questionsClearBtn: document.querySelector("#questions-clear-btn"),
     //*************** Quiz Section Elements ************** */
     askedQuestText: document.getElementById("asked-question-text"),
-    quizOptionWrapper: document.querySelector(".quiz-options-wrapper")
+    quizOptionWrapper: document.querySelector(".quiz-options-wrapper"),
+    progressBar: document.querySelector('progress'),
+    progressParagraph: document.getElementById("progress")
 };
 return {
 
@@ -264,7 +266,7 @@ return {
       characterArray = ["A", "B", "C", "D", "E", "F"];
       if(storage.GetLocalStorage().length > 0){
          DomElements.askedQuestText.textContent = storage.GetLocalStorage()[progress.questionIndex].question;
-         console.log(storage.GetLocalStorage());
+         // console.log(storage.GetLocalStorage());
 
          DomElements.quizOptionWrapper.innerHTML = "";
 
@@ -276,6 +278,11 @@ return {
          }
       }
       
+   },
+   displayProgress: function(storage, progress){
+      DomElements.progressBar.max = storage.GetLocalStorage().length;
+      DomElements.progressBar.value = progress.questionIndex + 1;
+      DomElements.progressParagraph.textContent = (progress.questionIndex + 1) + "/" + storage.GetLocalStorage().length;
    }
    
 };
@@ -299,6 +306,8 @@ var controller = (function(AccessDom, AccessLoc){
          AccessDom.clearQuestionList(AccessLoc.accessLoc)
    });
    AccessDom.displayQuestion(AccessLoc.accessLoc, AccessLoc.getQuizProgress);
+
+   AccessDom.displayProgress(AccessLoc.accessLoc, AccessLoc.getQuizProgress);
      
 })(Dom, Accesslocal);
 
