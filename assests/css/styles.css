@@ -4,10 +4,10 @@
    box-sizing:border-box;
 }
 
-
 .border {
     border: 1px solid red;
 }
+
 .forms-wrapper {
    position:relative;
    padding-top:50px;
@@ -244,6 +244,7 @@ div.inserted-questions-wrapper p span {
     font-size: 14px;
     display:block;
 }
+
 div.inserted-questions-wrapper p button {
     font-family: 'Cabin', sans-serif;
     color: #eee;
@@ -257,12 +258,11 @@ div.inserted-questions-wrapper p button {
     height:30px;
     display:block;
 }
+
 div.inserted-questions-wrapper p button:hover {
     background: #777;
     border: 1px solid #fff;
 }
-
-
 
 /* section.quiz-container */
 
@@ -278,6 +278,14 @@ section.quiz-container {
     animation: fade .8s;
 }
 
+@media screen and (max-width:576px) {
+  section.quiz-container {
+        height: 90vh;
+        width: 100%;
+        margin: 5vh 0;
+    }
+}
+
 div.quiz-wrapper {
     position: absolute;
     width: 60%;
@@ -286,6 +294,17 @@ div.quiz-wrapper {
     margin: 5vh 5% 5vh 3%;
     border-radius: 3px;
     overflow: auto;
+}
+
+@media screen and (max-width:576px) {
+    div.quiz-wrapper {
+        width: 100%;
+        height: 80vh;
+        background: rgba(0, 0, 0, .65);
+        margin-top: 5vh ;
+        border-radius: 3px;
+        overflow: auto;
+  }
 }
 
 div.quiz-wrapper::-webkit-scrollbar {
@@ -309,9 +328,18 @@ h2#asked-question-text {
 
 div.instant-answer-container {
     width: 80%;
-    margin: auto;
     position: relative;
-    opacity: 0;
+    opacity: 1;
+    margin: auto;
+}
+
+@media screen and (max-width:576px){
+    div.instant-answer-container {
+        width: 100%;
+        position: relative;
+        opacity: 1;
+       
+    }
 }
 
 div#instant-answer-wrapper {
@@ -382,6 +410,13 @@ div#instant-answer-wrapper button:hover {
 div.quiz-options-wrapper {
     width: 80%;
     margin: 40px auto 0 auto;
+}
+
+@media screen and (max-width: 576px) {
+    div.quiz-options-wrapper {
+        width: 100%;
+        margin-top: 40px;
+    }
 }
 
 div.quiz-options-wrapper div {
@@ -461,25 +496,27 @@ div.quiz-options-wrapper div p {
 
 /*PROGRES BAR*/
 
+
+
 div.progressBar {
     font-family: 'Cormorant Garamond', serif;
-    background: rgba(0, 0, 0, .65);
     position: absolute;
-    right: 9%;
-    width: 300px;
-    height: 300px;
-    margin-top: 15%;
-    display: flex;
-    justify-content: center;
+    right: 15px;
+    top: 0;
+    width: 110px;
+}
+
+@media screen and (max-width:576px){
+   
 }
 
 
 div.progressBar progress {
-    position: absolute;
-    width: 250px;
-    height: 25px;
+
+    width: 100%;
+    height: 15px;
     display: block;
-    bottom: 40px;
+ 
 }
 
 
@@ -526,12 +563,11 @@ progress::-moz-progress-bar {
 
 p#progress {
     border: 1px solid #eee;
-    position: absolute;
-    top: 70px;
-    padding: 30px 40px;
-    font-size: 75px;
+    padding: 10px 15px;
+    font-size: 20px;
     font-weight: bold;
     color: #eee;
     border-radius: 3px;
     background-color: #444;
+    margin-bottom: 10px;
 }

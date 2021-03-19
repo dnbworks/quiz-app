@@ -1,4 +1,5 @@
 // modal pattern
+
 var Accesslocal = (function(){
 
 let AccessLocalStorage = {
@@ -17,7 +18,6 @@ var quizProgress = {
    questionIndex:0
 }
 
-
 if(AccessLocalStorage.GetLocalStorage() === null){
         AccessLocalStorage.SetLocalStorage([]);
 }
@@ -29,7 +29,6 @@ function QuestionTest(id, question, options, correAns){
    this.optAnswer = options;
    this.correctAnswer = correAns;
 }
-
 
 return {
     getQuizProgress: quizProgress,
@@ -91,7 +90,18 @@ return {
            return false;
         }
     },
-    accessLoc:AccessLocalStorage
+    accessLoc:AccessLocalStorage,
+
+    checkAnswer: function(answer){
+      console.log();
+      if(AccessLocalStorage.GetLocalStorage()[quizProgress.questionIndex].correctAnswer === answer.textContent){
+         // console.log("correct");
+         return true;
+      } else {
+         return false;
+         // console.log("wrong");
+      }
+    }
 };
 })();
 
@@ -244,8 +254,7 @@ return {
           
           }
           DomElements.questionDeleteBtn.onclick = deleteQuestion;
-          
-          
+            
        }
        
    },
@@ -308,12 +317,27 @@ var controller = (function(AccessDom, AccessLoc){
    AccessDom.displayQuestion(AccessLoc.accessLoc, AccessLoc.getQuizProgress);
 
    AccessDom.displayProgress(AccessLoc.accessLoc, AccessLoc.getQuizProgress);
+
+   AccessDom.DomaccessGlobal.quizOptionWrapper.addEventListener("click", function(e){
+      var options = AccessDom.DomaccessGlobal.quizOptionWrapper.querySelectorAll("div");
+
+      for(var i = 0; i < options.length; i++) {
+         if(e.target.className === "choice-" + i){
+            var answer = document.querySelector(".quiz-options-wrapper div p." + e.target.className);
+            // console.log(answer);
+            AccessLoc.checkAnswer(answer);
+         }
+      }
+      
+      
+   });
      
 })(Dom, Accesslocal);
 
 // console.log(Accesslocal.accessLoc.GetLocalStorage()[0].optAnswer );
-window.onload = function(){
-var wrapper = document.querySelector(".wrapper");
-console.log(wrapper.offsetHeight);
-console.log(wrapper.clientHeight);
-}
+
+// window.onload = function(){
+// var wrapper = document.querySelector(".wrapper");
+// console.log(wrapper.offsetHeight);
+// console.log(wrapper.clientHeight);
+// }
