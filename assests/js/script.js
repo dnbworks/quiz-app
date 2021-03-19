@@ -121,7 +121,11 @@ let DomElements = {
     askedQuestText: document.getElementById("asked-question-text"),
     quizOptionWrapper: document.querySelector(".quiz-options-wrapper"),
     progressBar: document.querySelector('progress'),
-    progressParagraph: document.getElementById("progress")
+    progressParagraph: document.getElementById("progress"),
+    instantAnswerContainer: document.querySelector(".instant-answer-container"),
+    instantText: document.getElementById("instant-answer-text"),
+    instantClass: document.getElementById("instant-answer-wrapper"),
+    emotion: document.getElementById("emotion")
 };
 return {
 
@@ -292,6 +296,30 @@ return {
       DomElements.progressBar.max = storage.GetLocalStorage().length;
       DomElements.progressBar.value = progress.questionIndex + 1;
       DomElements.progressParagraph.textContent = (progress.questionIndex + 1) + "/" + storage.GetLocalStorage().length;
+   }, 
+   newDesign: function(answerResults, selectedAnswer){
+      var twoOption = {
+         instAnswerText: ["This is a wrong answer", "This is a correct answer"],
+         class: ['red', 'green'],
+         emotion: ["assests/img/sad.png", "assests/img/happy.png"],
+         spanBgColor: ["rgba(200, 0, 0, .7)", "rgba(0, 250, 0, .2)"]
+      }, index = 0;
+
+      if(answerResults){
+         index = 1;
+      }
+
+      DomElements.quizOptionWrapper.style.cssText = "opacity:0.6; pointer-events:none;";
+      DomElements.instantAnswerContainer.style.opacity = "1";
+      
+      DomElements.instantText.textContent = twoOption.instAnswerText[index];
+      DomElements.instantClass.className = twoOption.class[index];
+      DomElements.emotion.setAttribute("src", twoOption.emotion[index]);
+
+      selectedAnswer.previousElementSibling.style.backgroundColor = twoOption.spanBgColor[index];
+
+      console.log(selectedAnswer.previousElementSibling);
+
    }
    
 };
@@ -325,7 +353,8 @@ var controller = (function(AccessDom, AccessLoc){
          if(e.target.className === "choice-" + i){
             var answer = document.querySelector(".quiz-options-wrapper div p." + e.target.className);
             // console.log(answer);
-            AccessLoc.checkAnswer(answer);
+            var answerResult = AccessLoc.checkAnswer(answer);
+            AccessDom.newDesign(answerResult, answer);
          }
       }
       
