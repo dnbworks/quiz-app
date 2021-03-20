@@ -3,7 +3,7 @@
    margin:0;
    box-sizing:border-box;
 }
-
+/* cltrl q */
 .border {
     border: 1px solid red;
 }
@@ -287,7 +287,6 @@ section.quiz-container {
 }
 
 div.quiz-wrapper {
-    position: absolute;
     width: 60%;
     height: 80vh;
     background: rgba(0, 0, 0, .65);
@@ -298,12 +297,15 @@ div.quiz-wrapper {
 
 @media screen and (max-width:576px) {
     div.quiz-wrapper {
-        width: 100%;
+        width: 90%;
         height: 80vh;
         background: rgba(0, 0, 0, .65);
-        margin-top: 5vh ;
+        margin: 5vh;
+        margin-left: auto;
+        margin-right: auto;
         border-radius: 3px;
         overflow: auto;
+      
   }
 }
 

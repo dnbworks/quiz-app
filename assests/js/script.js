@@ -2,6 +2,7 @@
 
 var Accesslocal = (function(){
 
+/* storing data locally */
 let AccessLocalStorage = {
     SetLocalStorage: function(para){
        localStorage.setItem("QuestionCollections", JSON.stringify(para));
@@ -14,15 +15,17 @@ let AccessLocalStorage = {
     }
 };
 
+/* monitoring the quiz progress */
 var quizProgress = {
    questionIndex:0
 }
 
+/* setting a default empty array to the local storage if localstorage is null */
 if(AccessLocalStorage.GetLocalStorage() === null){
-        AccessLocalStorage.SetLocalStorage([]);
+   AccessLocalStorage.SetLocalStorage([]);
 }
 
-
+/* function that creates new instances of a question */
 function QuestionTest(id, question, options, correAns){
    this.id = id;
    this.question = question;
@@ -31,7 +34,11 @@ function QuestionTest(id, question, options, correAns){
 }
 
 return {
+   /* accesses the quizprogress property from AccessLocal return object */
     getQuizProgress: quizProgress,
+
+   accessLoc:AccessLocalStorage,
+
     addLocal: function(questionsText, opt){
 
      let optArr, newQuestion, correctAnswer, questionId, getStored, isChecked;
@@ -90,8 +97,7 @@ return {
            return false;
         }
     },
-    accessLoc:AccessLocalStorage,
-
+   
     checkAnswer: function(answer){
       console.log();
       if(AccessLocalStorage.GetLocalStorage()[quizProgress.questionIndex].correctAnswer === answer.textContent){
@@ -101,6 +107,10 @@ return {
          return false;
          // console.log("wrong");
       }
+    },
+
+    isFinished: function(){
+      return quizProgress.questionIndex + 1 == AccessLocalStorage.GetLocalStorage().length;
     }
 };
 })();
@@ -109,6 +119,7 @@ return {
 var Dom = (function(){
 
 let DomElements = {
+
     Question: document.getElementById("new-question-text"),
     option: document.querySelectorAll(".admin-option"),
     insertBtn: document.getElementById("question-insert-btn"),
@@ -125,8 +136,11 @@ let DomElements = {
     instantAnswerContainer: document.querySelector(".instant-answer-container"),
     instantText: document.getElementById("instant-answer-text"),
     instantClass: document.getElementById("instant-answer-wrapper"),
-    emotion: document.getElementById("emotion")
+    emotion: document.getElementById("emotion"),
+    nextButton: document.getElementById("next-question-btn")
+
 };
+
 return {
 
    DomaccessGlobal: DomElements,
@@ -262,6 +276,7 @@ return {
        }
        
    },
+
    clearQuestionList: function(storage){
        if(storage.GetLocalStorage() !== null){
           if(storage.GetLocalStorage().length > 0){
@@ -292,11 +307,13 @@ return {
       }
       
    },
+
    displayProgress: function(storage, progress){
       DomElements.progressBar.max = storage.GetLocalStorage().length;
       DomElements.progressBar.value = progress.questionIndex + 1;
       DomElements.progressParagraph.textContent = (progress.questionIndex + 1) + "/" + storage.GetLocalStorage().length;
    }, 
+
    newDesign: function(answerResults, selectedAnswer){
       var twoOption = {
          instAnswerText: ["This is a wrong answer", "This is a correct answer"],
@@ -320,28 +337,39 @@ return {
 
       console.log(selectedAnswer.previousElementSibling);
 
+   },
+
+   oldDesign: function(){
+      DomElements.quizOptionWrapper.style.cssText = "";
+      DomElements.instantAnswerContainer.style.opacity = "0";
    }
    
 };
 })();
+
+
 var controller = (function(AccessDom, AccessLoc){
-     AccessDom.createQuestionList(AccessLoc.accessLoc);
-     AccessDom.addInputDynamically();
-    AccessDom.DomaccessGlobal.insertBtn.addEventListener("click", function(e){
-       e.preventDefault();
-       var adimOption = document.querySelectorAll(".admin-option");
-       var checkboolean = AccessLoc.addLocal(AccessDom.DomaccessGlobal.Question, adimOption);
-       if(checkboolean){
-          AccessDom.createQuestionList(AccessLoc.accessLoc);
-       }
-    });
-    AccessDom.DomaccessGlobal.insertedquestionswrapper.addEventListener("click", function(e){
-        AccessDom.editQuestsList(e, AccessLoc.accessLoc, AccessDom.addInputDynamically, AccessDom.createQuestionList);
+
+   AccessDom.createQuestionList(AccessLoc.accessLoc);
+   AccessDom.addInputDynamically();
+
+   AccessDom.DomaccessGlobal.insertBtn.addEventListener("click", function(e){
+      e.preventDefault();
+      var adimOption = document.querySelectorAll(".admin-option");
+      var checkboolean = AccessLoc.addLocal(AccessDom.DomaccessGlobal.Question, adimOption);
+      if(checkboolean){
+         AccessDom.createQuestionList(AccessLoc.accessLoc);
+      }
+   });
+
+   AccessDom.DomaccessGlobal.insertedquestionswrapper.addEventListener("click", function(e){
+      AccessDom.editQuestsList(e, AccessLoc.accessLoc, AccessDom.addInputDynamically, AccessDom.createQuestionList);
    });
    
    AccessDom.DomaccessGlobal.questionsClearBtn.addEventListener("click", function(){
          AccessDom.clearQuestionList(AccessLoc.accessLoc)
    });
+
    AccessDom.displayQuestion(AccessLoc.accessLoc, AccessLoc.getQuizProgress);
 
    AccessDom.displayProgress(AccessLoc.accessLoc, AccessLoc.getQuizProgress);
@@ -355,6 +383,29 @@ var controller = (function(AccessDom, AccessLoc){
             // console.log(answer);
             var answerResult = AccessLoc.checkAnswer(answer);
             AccessDom.newDesign(answerResult, answer);
+
+            if(Accesslocal.isFinished()){
+               Dom.DomaccessGlobal.nextButton.textContent = "Finished";
+            }
+
+            var nextQuestion = function(progress, question){
+               if(Accesslocal.isFinished()){
+                  console.log("finished");
+               } else {
+                  Dom.oldDesign();
+                  Accesslocal.getQuizProgress.questionIndex++;
+
+                   AccessDom.displayQuestion(AccessLoc.accessLoc, AccessLoc.getQuizProgress);
+                   AccessDom.displayProgress(AccessLoc.accessLoc, AccessLoc.getQuizProgress);
+               }
+            }
+
+            AccessDom.DomaccessGlobal.nextButton.onclick = function(){
+
+               nextQuestion(Accesslocal.getQuizProgress.questionIndex, Accesslocal.accessLoc.GetLocalStorage());
+               // console.log(Accesslocal.getQuizProgress.questionIndex, Accesslocal.accessLoc.GetLocalStorage());
+            }
+               
          }
       }
       
@@ -363,6 +414,8 @@ var controller = (function(AccessDom, AccessLoc){
      
 })(Dom, Accesslocal);
 
+
+// debuging
 // console.log(Accesslocal.accessLoc.GetLocalStorage()[0].optAnswer );
 
 // window.onload = function(){
@@ -370,3 +423,5 @@ var controller = (function(AccessDom, AccessLoc){
 // console.log(wrapper.offsetHeight);
 // console.log(wrapper.clientHeight);
 // }
+
+
