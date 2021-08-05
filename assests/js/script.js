@@ -2,6 +2,39 @@
 
 var Accesslocal = (function(){
 
+/* Person constructor */
+function Person(id, firstname, lastname, score){
+   this.id = id;
+   this.firstname = firstname;
+   this.lastname = lastname;
+   this.score = score;
+}
+
+var currPerson = {
+    fullname: [],
+    score: 0
+};
+
+var adminPerson = ["John", "Smith"];
+
+var personLocalStorage = {
+   setPerson: function(para){
+       localStorage.setItem("person", JSON.stringify(para));
+    },
+    getPerson: function(){
+        return JSON.parse(localStorage.getItem("person"));
+    },
+    removePerson: function(){
+        localStorage.removeItem("person");
+    }
+
+}
+
+if(personLocalStorage.getPerson() === null){
+   personLocalStorage.setPerson([]);
+}
+
+
 /* storing data locally */
 let AccessLocalStorage = {
     SetLocalStorage: function(para){
@@ -34,6 +67,8 @@ function QuestionTest(id, question, options, correAns){
 }
 
 return {
+    administration: adminPerson,
+    currentUser: currPerson,
    /* accesses the quizprogress property from AccessLocal return object */
     getQuizProgress: quizProgress,
 
@@ -111,6 +146,28 @@ return {
 
     isFinished: function(){
       return quizProgress.questionIndex + 1 == AccessLocalStorage.GetLocalStorage().length;
+    },
+    
+    addPerson: function(){
+        var newPerson, personId, peopleData;
+        
+        if(personLocalStorage.getPerson().length > 0){
+           personId = personLocalStorage.getPerson()[personLocalStorage.getPerson().length - 1].id + 1;
+        } else{
+           personId = 0;
+        }
+        
+        newPerson = new Person(personId, currPerson[0], currPerson[1], currPerson.score);
+        
+        peopleData = personLocalStorage.getPerson();
+        // 298
+        peopleData.push(newPerson);
+        // 299
+        personLocalStorage.setPerson(peopleData);
+        // 295
+        
+        console.log(newPerson);
+    
     }
 };
 })();
@@ -119,7 +176,8 @@ return {
 var Dom = (function(){
 
 let DomElements = {
-
+    //************** admin section *******************
+    adminPanel: document.querySelector(".admin-panel-container"),
     Question: document.getElementById("new-question-text"),
     option: document.querySelectorAll(".admin-option"),
     insertBtn: document.getElementById("question-insert-btn"),
@@ -129,6 +187,7 @@ let DomElements = {
     questionDeleteBtn: document.querySelector("#question-delete-btn"),
     questionsClearBtn: document.querySelector("#questions-clear-btn"),
     //*************** Quiz Section Elements ************** */
+    quizSection: document.querySelector(".quiz-container"),
     askedQuestText: document.getElementById("asked-question-text"),
     quizOptionWrapper: document.querySelector(".quiz-options-wrapper"),
     progressBar: document.querySelector('progress'),
@@ -137,13 +196,19 @@ let DomElements = {
     instantText: document.getElementById("instant-answer-text"),
     instantClass: document.getElementById("instant-answer-wrapper"),
     emotion: document.getElementById("emotion"),
-    nextButton: document.getElementById("next-question-btn")
+    nextButton: document.getElementById("next-question-btn"),
+    //*************** landing page section *************
+    landingPage: document.querySelector(".landing-page-container"),
+    startQuizBtn: document.querySelector("#start-quiz-btn"),
+    firstName: document.querySelector("#firstname"),
+    lastName: document.querySelector("#lastname")
 
 };
 
 return {
 
    DomaccessGlobal: DomElements,
+   
    addInputDynamically: function(){
 
      function addInputs(){
@@ -165,7 +230,7 @@ return {
        DomElements.insertedquestionswrapper.innerHTML = "";
        for(var i = 0;i < getquestion.GetLocalStorage().length;i++){
            numbering.push(i+1);
-           questionsList = "<p><span>" + numbering[i] + ". " + getquestion.GetLocalStorage()[i].question + ' </span><button id="question-' + getquestion.GetLocalStorage()[i].id + '">Edit</button></p>';
+           questionsList = "<p><span>" + numbering[i] + ". " + getquestion.GetLocalStorage()[i].question.slice(0, 28) + '...' + ' </span><button id="question-' + getquestion.GetLocalStorage()[i].id + '">Edit</button></p>';
            DomElements.insertedquestionswrapper.insertAdjacentHTML("beforeend", questionsList);
        }
 
@@ -174,12 +239,18 @@ return {
    editQuestsList:function(event, storageList, inputAdd, updateList){
 
        var getId, foundItem, placeInArr, optHtml;
+       
+       /*
        DomElements.questionUpdateBtn.style.visibility = "visible";
        DomElements.questionDeleteBtn.style.visibility = "visible";
        DomElements.insertBtn.style.visibility = "hidden";
        DomElements.questionsClearBtn.style.pointerEvents = "none";
-
+       */
        if("question-".indexOf(event.target.id)){
+       
+       
+    
+       
 
           getId = parseInt(event.target.id.split("-")[1]);
           questionList = storageList.GetLocalStorage();
@@ -197,11 +268,24 @@ return {
           DomElements.adminoptionsContainer.innerHTML = "";
 
           for(let x = 0;x<foundItem.optAnswer.length;x++){
-             optHtml += '<div class="admin-option-wrapper"><input type="radio" class="admin-option-' + x + ' name="answer" value="0"><input type="text" class="admin-option admin-option-' + x + '" value="' + foundItem.optAnswer[x] + '"></div>';
-             DomElements.adminoptionsContainer.innerHTML = optHtml;
+             optHtml += '<div class="admin-option-wrapper"><input type="radio" class="admin-option-' + x + '" name="answer" value="0" ><input type="text" class="admin-option admin-option-' + x + '" value="' + foundItem.optAnswer[x] + '"></div>';
+             // optionHTML += '<div class="admin-option-wrapper"><input type="radio" class="admin-option-' + x + '" name="answer" value="' + x + '"><input type="text" class="admin-option admin-option-' + x + '" value="'+ foundItem.options[x] + '"></div>';
+             
           
           }
           
+          DomElements.adminoptionsContainer.innerHTML = optHtml;
+          
+          DomElements.questionUpdateBtn.style.display = "block";
+          DomElements.questionDeleteBtn.style.display = "block";
+          DomElements.insertBtn.style.visibility = "hidden";
+          DomElements.questionsClearBtn.style.pointerEvents = "none";
+          
+          // add inputs dynamically 
+         inputAdd();
+         
+         
+         
          var backDefaultview = function(){
              var updatedContent;
              
@@ -212,8 +296,8 @@ return {
              options[i].previousElementSibling.checked = false;
              }
              
-             DomElements.questionUpdateBtn.style.visibility = "hidden";
-             DomElements.questionDeleteBtn.style.visibility = "hidden";
+             DomElements.questionUpdateBtn.style.display = "none";
+             DomElements.questionDeleteBtn.style.display = "none";
              DomElements.insertBtn.style.visibility = "visible";
              DomElements.questionsClearBtn.style.pointerEvents = "";
              updateList(storageList);
@@ -262,7 +346,9 @@ return {
              }
             
           }
-          inputAdd();
+          
+          
+       
           DomElements.questionUpdateBtn.onclick = UpdateQuestion;
           
           var deleteQuestion = function(){
@@ -290,16 +376,18 @@ return {
    },
 
    displayQuestion: function(storage, progress){
+   
       var newOptionHtml, characterArray;
       characterArray = ["A", "B", "C", "D", "E", "F"];
       if(storage.GetLocalStorage().length > 0){
-         DomElements.askedQuestText.textContent = storage.GetLocalStorage()[progress.questionIndex].question;
+         var questionNum = progress.questionIndex;
+         DomElements.askedQuestText.textContent = ( questionNum + 1 ) + ". " + storage.GetLocalStorage()[progress.questionIndex].question;
          // console.log(storage.GetLocalStorage());
 
          DomElements.quizOptionWrapper.innerHTML = "";
 
          for(var i = 0; i < storage.GetLocalStorage()[progress.questionIndex].optAnswer.length; i++){
-            newOptionHtml = '<div class="choice-' + i + '"><span class="choice-'+ i +'">'+ characterArray[i] +'</span><p  class="choice-'+ i +'">' + storage.GetLocalStorage()[progress.questionIndex].optAnswer[i] +'</p></div>';
+            newOptionHtml = '<div class="choice-' + i + ' d-flex align-items-center"><span class="choice-'+ i +'">'+ characterArray[i] +'</span><p  class="choice-'+ i +'">' + storage.GetLocalStorage()[progress.questionIndex].optAnswer[i] +'</p></div>';
 
             DomElements.quizOptionWrapper.insertAdjacentHTML('beforeend', newOptionHtml);
 
@@ -316,9 +404,9 @@ return {
 
    newDesign: function(answerResults, selectedAnswer){
       var twoOption = {
-         instAnswerText: ["This is a wrong answer", "This is a correct answer"],
+         instAnswerText: ["wrong answer", "correct answer"],
          class: ['red', 'green'],
-         emotion: ["assests/img/sad.png", "assests/img/happy.png"],
+         emotion: ["assests/img/wrong.png", "assests/img/right.png"],
          spanBgColor: ["rgba(200, 0, 0, .7)", "rgba(0, 250, 0, .2)"]
       }, index = 0;
 
@@ -327,7 +415,7 @@ return {
       }
 
       DomElements.quizOptionWrapper.style.cssText = "opacity:0.6; pointer-events:none;";
-      DomElements.instantAnswerContainer.style.opacity = "1";
+      DomElements.instantAnswerContainer.style.display = "block";
       
       DomElements.instantText.textContent = twoOption.instAnswerText[index];
       DomElements.instantClass.className = twoOption.class[index];
@@ -341,7 +429,26 @@ return {
 
    oldDesign: function(){
       DomElements.quizOptionWrapper.style.cssText = "";
-      DomElements.instantAnswerContainer.style.opacity = "0";
+      DomElements.instantAnswerContainer.style.display = "none";
+   },
+   
+   getFullName: function(currPerson, questionStorage, admin){
+     
+     
+     
+     if(!(DomElements.firstName.value === admin[0] && DomElements.lastName.value === admin[1])){
+        currPerson.fullname.push(DomElements.firstName.value);
+        currPerson.fullname.push(DomElements.lastName.value);
+        
+        console.log(currPerson.fullname[0], currPerson.fullname[1]);
+        
+        DomElements.quizSection.style.display = "block";
+        DomElements.landingPage.style.display = "none";
+     }else{
+         DomElements.adminPanel.style.display = "block";
+         DomElements.landingPage.style.display = "none";
+     }
+     
    }
    
 };
@@ -386,10 +493,12 @@ var controller = (function(AccessDom, AccessLoc){
 
             if(Accesslocal.isFinished()){
                Dom.DomaccessGlobal.nextButton.textContent = "Finished";
+               
             }
 
             var nextQuestion = function(progress, question){
                if(Accesslocal.isFinished()){
+                   Accesslocal.addPerson();
                   console.log("finished");
                } else {
                   Dom.oldDesign();
@@ -411,6 +520,12 @@ var controller = (function(AccessDom, AccessLoc){
       
       
    });
+   
+   
+   AccessDom.DomaccessGlobal.startQuizBtn.addEventListener("click", function(){
+   
+      AccessDom.getFullName(AccessLoc.currentUser, AccessLoc.accessLoc.GetLocalStorage(), AccessLoc.administration );
+   });
      
 })(Dom, Accesslocal);
 
@@ -425,3 +540,16 @@ var controller = (function(AccessDom, AccessLoc){
 // }
 
 
+/*
+
+window.addEventListener("load", function(){
+   
+    var counter = 0;
+    if(counter <= 1 && counter < 2){
+       console.log("hi");
+    }
+    
+});
+
+
+*/
